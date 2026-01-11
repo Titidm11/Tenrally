@@ -1,0 +1,2292 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Tenrally — Partenaires Tennis & Padel</title>
+  <meta name="description" content="Tenrally — Trouve des partenaires de tennis et padel, crée des matchs, discute, confirme, et joue plus souvent." />
+  <style>
+    :root{
+      --bg:#0b1020;
+      --panel:#0f1730;
+      --panel2:#121f3d;
+      --text:#eaf0ff;
+      --muted:#aab6df;
+      --border:rgba(255,255,255,.10);
+      --accent:#7aa2ff;
+      --accent2:#9cffd0;
+      --danger:#ff6b7a;
+      --ok:#4de3a2;
+      --warn:#ffd66b;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --r:14px;
+      --r2:12px;
+      --max:1100px;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:var(--sans);
+      color:var(--text);
+      background:
+        radial-gradient(900px 600px at 15% 0%, rgba(122,162,255,.22), transparent 55%),
+        radial-gradient(900px 600px at 90% 10%, rgba(156,255,208,.14), transparent 55%),
+        linear-gradient(180deg, #070a13, var(--bg));
+    }
+    a{color:inherit}
+    .wrap{max-width:var(--max); margin:0 auto; padding:18px}
+    .topbar{
+      position:sticky; top:0; z-index:30;
+      background: rgba(11,16,32,.75);
+      backdrop-filter: blur(14px);
+      border-bottom:1px solid var(--border);
+    }
+    .toprow{max-width:var(--max); margin:0 auto; padding:14px 18px; display:flex; align-items:center; justify-content:space-between; gap:12px}
+    .brand{display:flex; align-items:center; gap:10px; text-decoration:none}
+    .logo{
+      width:34px; height:34px; border-radius:10px;
+      background: linear-gradient(135deg, rgba(122,162,255,.95), rgba(156,255,208,.85));
+      box-shadow: var(--shadow);
+    }
+    .brand b{letter-spacing:.2px}
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 10px; border-radius:999px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      color:var(--muted);
+      font-size:12px;
+      white-space:nowrap;
+    }
+    .grid{display:grid; gap:14px}
+    .cols2{grid-template-columns: 1.2fr .8fr}
+    @media (max-width: 980px){ .cols2{grid-template-columns:1fr} }
+
+    .card{
+      background: rgba(18,31,61,.55);
+      border:1px solid var(--border);
+      border-radius: var(--r);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .card .hd{
+      padding:14px 14px 10px;
+      border-bottom:1px solid var(--border);
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+    }
+    .card .bd{padding:14px}
+    .title{font-size:18px; font-weight:700; margin:0}
+    .sub{color:var(--muted); margin:6px 0 0; line-height:1.4}
+    .kpi{font-family:var(--mono); font-size:12px; color:var(--muted)}
+    .row{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+    .spacer{flex:1}
+    .btn{
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      color:var(--text);
+      padding:10px 12px;
+      border-radius: 12px;
+      cursor:pointer;
+      transition: transform .06s ease, background .15s ease;
+      user-select:none;
+    }
+    .btn:hover{background: rgba(255,255,255,.07)}
+    .btn:active{transform: translateY(1px)}
+    .btn.primary{background: rgba(122,162,255,.20); border-color: rgba(122,162,255,.35)}
+    .btn.good{background: rgba(77,227,162,.18); border-color: rgba(77,227,162,.35)}
+    .btn.danger{background: rgba(255,107,122,.16); border-color: rgba(255,107,122,.35)}
+    .btn.ghost{background: transparent}
+    .btn.small{padding:7px 9px; font-size:12px; border-radius:10px}
+
+    .field{display:grid; gap:6px; margin:10px 0}
+    label{color:var(--muted); font-size:13px}
+    input, select, textarea{
+      width:100%;
+      padding:11px 12px;
+      border-radius: 12px;
+      border:1px solid var(--border);
+      background: rgba(7,10,19,.45);
+      color:var(--text);
+      outline:none;
+    }
+    textarea{min-height:90px; resize:vertical}
+    .hint{color:var(--muted); font-size:12px; line-height:1.4}
+    .split{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+    @media (max-width:720px){ .split{grid-template-columns:1fr} }
+
+    .tabs{
+      display:flex; gap:8px; flex-wrap:wrap;
+      padding:0 18px 14px; max-width:var(--max); margin:0 auto;
+    }
+    .tab{
+      padding:9px 11px;
+      border:1px solid var(--border);
+      border-radius:999px;
+      color:var(--muted);
+      text-decoration:none;
+      font-size:13px;
+      background: rgba(255,255,255,.03);
+    }
+    .tab.active{color:var(--text); border-color: rgba(122,162,255,.38); background: rgba(122,162,255,.14)}
+    .badge{
+      display:inline-flex; align-items:center; gap:6px;
+      padding:4px 8px; border-radius:999px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      font-size:12px; color:var(--muted);
+    }
+    .badge.ok{border-color: rgba(77,227,162,.35); background: rgba(77,227,162,.12); color: #ccffe8}
+    .badge.warn{border-color: rgba(255,214,107,.35); background: rgba(255,214,107,.12); color: #fff1cc}
+    .badge.danger{border-color: rgba(255,107,122,.35); background: rgba(255,107,122,.12); color: #ffd2d7}
+
+    .list{display:grid; gap:10px}
+    .item{
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.03);
+      border-radius: var(--r2);
+      padding:12px;
+      display:flex; gap:12px; align-items:flex-start;
+    }
+    .avatar{
+      width:42px; height:42px; border-radius: 14px;
+      background: linear-gradient(135deg, rgba(122,162,255,.35), rgba(156,255,208,.22));
+      border:1px solid var(--border);
+      display:flex; align-items:center; justify-content:center;
+      font-weight:800;
+    }
+    .item h4{margin:0 0 4px; font-size:15px}
+    .item p{margin:0; color:var(--muted); font-size:13px; line-height:1.35}
+    .item .meta{display:flex; gap:6px; flex-wrap:wrap; margin-top:8px}
+    .hr{height:1px; background: var(--border); margin:12px 0}
+    .footer{color:var(--muted); font-size:12px; padding:12px 0}
+    .mono{font-family:var(--mono)}
+
+    .toast{
+      position: fixed; left:50%; bottom:18px; transform: translateX(-50%);
+      background: rgba(18,31,61,.92);
+      border:1px solid var(--border);
+      box-shadow: var(--shadow);
+      border-radius: 14px;
+      padding:10px 12px;
+      color:var(--text);
+      display:none;
+      max-width: min(680px, calc(100vw - 24px));
+      z-index:999;
+    }
+    .toast.show{display:block}
+    .toast .t{font-size:13px}
+    .toast .s{font-size:12px; color:var(--muted); margin-top:4px}
+
+    .notice{
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.03);
+      border-radius: 12px;
+      padding:10px 12px;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.45;
+    }
+    .notice strong{color:var(--text)}
+    .right{justify-content:flex-end}
+    .nowrap{white-space:nowrap}
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="toprow">
+      <a class="brand" href="#/">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <b>Tenrally</b><div class="kpi">Tennis & Padel • MVP</div>
+        </div>
+      </a>
+      <div class="row" id="top-actions">
+        <!-- filled by JS -->
+      </div>
+    </div>
+    <div class="tabs" id="tabs" style="display:none"></div>
+  </div>
+
+  <main class="wrap" id="app"></main>
+  <div class="toast" id="toast">
+    <div class="t" id="toastT"></div>
+    <div class="s" id="toastS"></div>
+  </div>
+
+<script>
+(() => {
+  /* ---------------------------
+     Utilities
+  --------------------------- */
+  const $ = (sel) => document.querySelector(sel);
+  const esc = (s) => (s ?? "").toString().replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  const uid = () => (crypto?.randomUUID ? crypto.randomUUID() : ("id_"+Math.random().toString(16).slice(2)+Date.now().toString(16)));
+  const nowISO = () => new Date().toISOString();
+  const fmtDateTime = (iso) => {
+    const d = new Date(iso);
+    const pad = (n)=> String(n).padStart(2,"0");
+    return `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  };
+  const centsToEUR = (cents) => (cents/100).toFixed(2).replace(".", ",") + " €";
+
+  const toast = (title, subtitle="") => {
+    $("#toastT").textContent = title;
+    $("#toastS").textContent = subtitle;
+    const el = $("#toast");
+    el.classList.add("show");
+    clearTimeout(toast._t);
+    toast._t = setTimeout(()=> el.classList.remove("show"), 2800);
+  };
+
+  /* ---------------------------
+     Local DB (front-only)
+  --------------------------- */
+  const STORE_KEY = "tenrally_db_v1";
+  const SESSION_KEY = "tenrally_session_v1";
+
+  const defaultDB = () => ({
+    meta: { version: 1, created_at: nowISO() },
+    settings: {
+      currency: "EUR",
+      reservation_fee_cents: 199,
+      premium_monthly_cents: 999,
+      premium_annual_cents: 9588, // 95,88€
+      promo_annual_enabled: true,
+      promo_deadline_iso: null, // optional
+      cancellation_policy_hours: 24,
+      faq: [
+        { q:"Tenrally, c’est quoi ?", a:"Une app pour trouver des partenaires de tennis et padel, créer des matchs et jouer plus souvent."},
+        { q:"Comment fonctionnent les frais ?", a:"En gratuit, un frais s’applique lors de la confirmation d’un match. Avec Premium, les frais sont à 0 €."},
+        { q:"Premium annuel promo ?", a:"Paiement unique (engagement 12 mois), non remboursable. Tu gardes Premium jusqu’à la fin de l’année."}
+      ],
+      terms: "Conditions générales — Prototype. Pour la production, rédiger CGU & politique de confidentialité conformes RGPD."
+    },
+    users: [],
+    profiles: [],
+    sport_profiles: [],
+    availability: [],
+    matches: [],
+    requests: [],
+    conversations: [],
+    conversation_members: [],
+    messages: [],
+    subscriptions: [],
+    payments: [],
+    reports: [],
+    blocks: [],
+    bans: [] // {user_id, reason, at}
+  });
+
+  const loadDB = () => {
+    const raw = localStorage.getItem(STORE_KEY);
+    if(!raw) return null;
+    try { return JSON.parse(raw); } catch { return null; }
+  };
+  const saveDB = (db) => localStorage.setItem(STORE_KEY, JSON.stringify(db));
+
+  const loadSession = () => {
+    const raw = localStorage.getItem(SESSION_KEY);
+    if(!raw) return { user_id:null, is_admin:false };
+    try { return JSON.parse(raw); } catch { return { user_id:null, is_admin:false }; }
+  };
+  const saveSession = (s) => localStorage.setItem(SESSION_KEY, JSON.stringify(s));
+
+  let db = loadDB();
+  if(!db){
+    db = defaultDB();
+    seedDemo(db);
+    saveDB(db);
+  }
+  let session = loadSession();
+
+  function seedDemo(db){
+    const u1 = { id: uid(), email:"alex@demo.com", phone:null, created_at: nowISO() };
+    const u2 = { id: uid(), email:"nina@demo.com", phone:null, created_at: nowISO() };
+    const u3 = { id: uid(), email:"sam@demo.com", phone:null, created_at: nowISO() };
+    db.users.push(u1,u2,u3);
+    db.profiles.push(
+      { user_id:u1.id, display_name:"Alex", bio:"Plutôt compétitif, dispo en soirée.", city:"Bruxelles", lat:50.8503, lng:4.3517, avatar_initial:"A", created_at: nowISO() },
+      { user_id:u2.id, display_name:"Nina", bio:"Padel double, niveau intermédiaire.", city:"Ixelles", lat:50.83, lng:4.37, avatar_initial:"N", created_at: nowISO() },
+      { user_id:u3.id, display_name:"Sam", bio:"Tennis loisir, j’aime jouer le week-end.", city:"Uccle", lat:50.80, lng:4.33, avatar_initial:"S", created_at: nowISO() }
+    );
+    db.sport_profiles.push(
+      { id: uid(), user_id:u1.id, sport:"TENNIS", level:7, prefers_singles:true, prefers_doubles:false, created_at: nowISO() },
+      { id: uid(), user_id:u2.id, sport:"PADEL", level:5, prefers_singles:false, prefers_doubles:true, created_at: nowISO() },
+      { id: uid(), user_id:u3.id, sport:"TENNIS", level:4, prefers_singles:true, prefers_doubles:true, created_at: nowISO() }
+    );
+    // Matches demo
+    const m1 = { id: uid(), creator_id:u1.id, sport:"TENNIS", starts_at: new Date(Date.now()+36*3600*1000).toISOString(), duration_min:90, is_doubles:false,
+                 location_text:"Bois de la Cambre (proche)", lat:50.82, lng:4.37, level_min:6, level_max:8, status:"OPEN", created_at: nowISO() };
+    const m2 = { id: uid(), creator_id:u2.id, sport:"PADEL", starts_at: new Date(Date.now()+72*3600*1000).toISOString(), duration_min:90, is_doubles:true,
+                 location_text:"Forest (zone)", lat:50.81, lng:4.33, level_min:4, level_max:6, status:"OPEN", created_at: nowISO() };
+    db.matches.push(m1,m2);
+
+    // One demo subscription: none by default
+  }
+
+  /* ---------------------------
+     Domain helpers
+  --------------------------- */
+  const getUser = (id) => db.users.find(u => u.id===id) || null;
+  const getProfile = (uid_) => db.profiles.find(p => p.user_id===uid_) || null;
+  const getSports = (uid_) => db.sport_profiles.filter(s => s.user_id===uid_);
+  const isBanned = (uid_) => db.bans.some(b => b.user_id===uid_);
+  const blocked = (by, other) => db.blocks.some(b => b.blocker_id===by && b.blocked_id===other);
+
+  function getSubscription(uid_){
+    return db.subscriptions.find(s => s.user_id===uid_) || null;
+  }
+  function hasPremium(uid_){
+    const sub = getSubscription(uid_);
+    if(!sub) return false;
+    if(sub.status !== "active") return false;
+    if(sub.current_period_end && new Date(sub.current_period_end).getTime() < Date.now()) return false;
+    return true;
+  }
+
+  function ensureProfile(uid_){
+    let p = getProfile(uid_);
+    if(!p){
+      p = { user_id: uid_, display_name:"", bio:"", city:"", lat:null, lng:null, avatar_initial:"?", created_at: nowISO() };
+      db.profiles.push(p);
+    }
+    return p;
+  }
+
+  function myId(){ return session.user_id; }
+  function requireAuth(){
+    if(!myId()) { location.hash = "#/auth"; return false; }
+    if(isBanned(myId())) { location.hash = "#/banned"; return false; }
+    return true;
+  }
+
+  /* ---------------------------
+     Router
+  --------------------------- */
+  const routes = {};
+  const route = (path, fn) => routes[path] = fn;
+
+  function parseHash(){
+    const h = (location.hash || "#/").slice(1); // remove #
+    const [path, queryStr] = h.split("?");
+    const query = Object.fromEntries(new URLSearchParams(queryStr || ""));
+    return { path, query };
+  }
+
+  function matchRoute(path){
+    // supports /match/:id, /players/:id, /messages/:id, /admin/:tab
+    const parts = path.split("/").filter(Boolean);
+    const candidates = Object.keys(routes);
+    for(const cand of candidates){
+      const cparts = cand.split("/").filter(Boolean);
+      if(cparts.length !== parts.length) continue;
+      const params = {};
+      let ok = true;
+      for(let i=0;i<cparts.length;i++){
+        if(cparts[i].startsWith(":")){
+          params[cparts[i].slice(1)] = parts[i];
+        }else if(cparts[i] !== parts[i]){
+          ok = false; break;
+        }
+      }
+      if(ok) return { fn: routes[cand], params };
+    }
+    return null;
+  }
+
+  function render(){
+    // tabs & top actions
+    renderTop();
+
+    const { path, query } = parseHash();
+    const m = matchRoute(path);
+    if(!m){
+      $("#app").innerHTML = pageNotFound();
+      return;
+    }
+    m.fn({ ...m.params, query });
+  }
+
+  window.addEventListener("hashchange", render);
+
+  /* ---------------------------
+     UI: Topbar & Tabs
+  --------------------------- */
+  function renderTop(){
+    const actions = $("#top-actions");
+    const tabs = $("#tabs");
+    const uid_ = myId();
+
+    if(!uid_){
+      tabs.style.display = "none";
+      actions.innerHTML = `
+        <a class="btn small ghost" href="#/">Accueil</a>
+        <a class="btn small primary" href="#/auth">Connexion</a>
+      `;
+      return;
+    }
+
+    const p = getProfile(uid_) || { display_name:"Compte" };
+    const premium = hasPremium(uid_);
+    const badge = premium ? `<span class="badge ok">Premium</span>` : `<span class="badge">Gratuit</span>`;
+
+    actions.innerHTML = `
+      ${badge}
+      <a class="btn small ghost" href="#/premium">Offres</a>
+      <a class="btn small ghost" href="#/settings">Profil</a>
+    `;
+
+    tabs.style.display = "flex";
+    tabs.innerHTML = `
+      <a class="tab ${isActive("/discover")}" href="#/discover">Découvrir</a>
+      <a class="tab ${isActive("/matches")}" href="#/matches">Matchs</a>
+      <a class="tab ${isActive("/create")}" href="#/create">Créer</a>
+      <a class="tab ${isActive("/messages")}" href="#/messages">Messages</a>
+      <a class="tab ${isActive("/settings")}" href="#/settings">Profil</a>
+      ${session.is_admin ? `<a class="tab ${isActive("/admin")}" href="#/admin">Admin</a>` : ``}
+    `;
+
+    function isActive(prefix){
+      const { path } = parseHash();
+      return path.startsWith(prefix) ? "active" : "";
+    }
+  }
+
+  /* ---------------------------
+     Pages
+  --------------------------- */
+  route("/", () => {
+    const uid_ = myId();
+    if(uid_) { location.hash = "#/discover"; return; }
+
+    const s = db.settings;
+    $("#app").innerHTML = `
+      <div class="grid cols2">
+        <section class="card">
+          <div class="hd">
+            <h1 class="title">Joue plus souvent. Rencontre des partenaires.</h1>
+            <span class="badge ok">Tenrally</span>
+          </div>
+          <div class="bd">
+            <p class="sub">
+              Tenrally te connecte à des joueurs de <strong>tennis</strong> et de <strong>padel</strong> près de chez toi.
+              Crée des matchs, discute, confirme, et profite de <strong>0 € de frais</strong> avec Premium.
+            </p>
+            <div class="hr"></div>
+            <div class="row">
+              <a class="btn primary" href="#/auth">Commencer</a>
+              <a class="btn" href="#/help">FAQ</a>
+              <span class="pill">Frais par confirmation : <b>${centsToEUR(s.reservation_fee_cents)}</b></span>
+              <span class="pill">Premium mensuel : <b>${centsToEUR(s.premium_monthly_cents)}</b></span>
+              <span class="pill">Annuel : <b>${centsToEUR(s.premium_annual_cents)}/an</b></span>
+            </div>
+            <div class="hr"></div>
+            <div class="notice">
+              <strong>Note :</strong> ce prototype simule les paiements. Pour lancer en production :
+              Stripe + base de données + sécurité + déploiement (je peux te fournir le plan complet).
+            </div>
+          </div>
+        </section>
+
+        <aside class="card">
+          <div class="hd">
+            <h2 class="title">Comment ça marche</h2>
+          </div>
+          <div class="bd">
+            <div class="list">
+              ${howItWorksItem("1) Profil", "Choisis tennis/padel, ton niveau, ta zone, tes dispos.")}
+              ${howItWorksItem("2) Matchs", "Crée un match ou rejoins un match existant.")}
+              ${howItWorksItem("3) Confirmation", "Au moment de confirmer : gratuit avec Premium, sinon frais.")}
+              ${howItWorksItem("4) Confiance", "Chat, blocage, signalement, et historique.")}
+            </div>
+          </div>
+        </aside>
+      </div>
+      <div class="footer">© Tenrally — Prototype front-only</div>
+    `;
+    function howItWorksItem(t, d){
+      return `
+        <div class="item">
+          <div class="avatar">${esc(t[0])}</div>
+          <div>
+            <h4>${esc(t)}</h4>
+            <p>${esc(d)}</p>
+          </div>
+        </div>
+      `;
+    }
+  });
+
+  route("/help", () => {
+    const s = db.settings;
+    $("#app").innerHTML = `
+      <div class="card">
+        <div class="hd">
+          <h2 class="title">FAQ</h2>
+          <div class="row">
+            <a class="btn small ghost" href="#/">Accueil</a>
+            ${myId() ? `<a class="btn small ghost" href="#/discover">App</a>` : `<a class="btn small primary" href="#/auth">Connexion</a>`}
+          </div>
+        </div>
+        <div class="bd">
+          ${s.faq.map(x => `
+            <div class="item">
+              <div class="avatar">?</div>
+              <div>
+                <h4>${esc(x.q)}</h4>
+                <p>${esc(x.a)}</p>
+              </div>
+            </div>
+          `).join("")}
+          <div class="hr"></div>
+          <div class="notice"><strong>Conditions :</strong> ${esc(s.terms)}</div>
+        </div>
+      </div>
+    `;
+  });
+
+  route("/auth", () => {
+    // simulated OTP
+    const tempCode = Math.floor(100000 + Math.random()*900000).toString();
+    $("#app").innerHTML = `
+      <div class="grid cols2">
+        <section class="card">
+          <div class="hd"><h2 class="title">Connexion / Inscription</h2></div>
+          <div class="bd">
+            <div class="notice">
+              <strong>Prototype :</strong> l’OTP est simulé. Clique “Envoyer le code” et utilise le code affiché.
+            </div>
+            <div class="field">
+              <label>Email (ou téléphone)</label>
+              <input id="auth_id" placeholder="ex: moi@email.com" autocomplete="email" />
+              <div class="hint">En production : OTP par SMS/email.</div>
+            </div>
+            <div class="row">
+              <button class="btn primary" id="send_code">Envoyer le code</button>
+              <span class="pill">Code (démo) : <b class="mono" id="otp_code">—</b></span>
+            </div>
+            <div class="field">
+              <label>Code reçu</label>
+              <input id="auth_code" placeholder="6 chiffres" inputmode="numeric" />
+            </div>
+            <div class="row right">
+              <button class="btn good" id="login">Se connecter</button>
+            </div>
+          </div>
+        </section>
+
+        <aside class="card">
+          <div class="hd"><h3 class="title">Pourquoi Premium ?</h3></div>
+          <div class="bd">
+            <div class="item">
+              <div class="avatar">€</div>
+              <div>
+                <h4>0 € de frais</h4>
+                <p>Avec Premium, les confirmations sont sans frais.</p>
+                <div class="meta">
+                  <span class="badge">Frais : ${centsToEUR(db.settings.reservation_fee_cents)}</span>
+                  <span class="badge ok">Premium : 0 € de frais</span>
+                </div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="avatar">⚡</div>
+              <div>
+                <h4>Pour les joueurs réguliers</h4>
+                <p>Rentable dès ~6 confirmations/mois si frais = 1,99 €.</p>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    `;
+
+    const otpEl = $("#otp_code");
+    let shown = false;
+    $("#send_code").addEventListener("click", () => {
+      shown = true;
+      otpEl.textContent = tempCode;
+      toast("Code envoyé (démo).", "Utilise le code affiché.");
+    });
+
+    $("#login").addEventListener("click", () => {
+      const ident = ($("#auth_id").value || "").trim().toLowerCase();
+      const code = ($("#auth_code").value || "").trim();
+      if(!ident){ toast("Saisis un email ou un téléphone."); return; }
+      if(!shown){ toast("Clique d’abord sur “Envoyer le code”."); return; }
+      if(code !== tempCode){ toast("Code incorrect.", "En démo, utilise le code affiché."); return; }
+
+      // Find or create user
+      let user = db.users.find(u => (u.email && u.email===ident) || (u.phone && u.phone===ident));
+      if(!user){
+        const isEmail = ident.includes("@");
+        user = { id: uid(), email: isEmail ? ident : null, phone: isEmail ? null : ident, created_at: nowISO() };
+        db.users.push(user);
+        db.subscriptions.push({ user_id:user.id, plan:"NONE", status:"inactive", current_period_end:null, cancel_at_period_end:false, provider:"demo", created_at: nowISO(), updated_at: nowISO() });
+        ensureProfile(user.id);
+        saveDB(db);
+      }
+      if(isBanned(user.id)){
+        session = { user_id:user.id, is_admin:false };
+        saveSession(session);
+        location.hash = "#/banned";
+        return;
+      }
+      session = { user_id:user.id, is_admin:false };
+      saveSession(session);
+      toast("Connecté.", "Bienvenue sur Tenrally.");
+      // If onboarding incomplete -> onboarding
+      const p = ensureProfile(user.id);
+      const hasName = (p.display_name || "").trim().length >= 2;
+      const sports = getSports(user.id);
+      if(!hasName || sports.length===0) location.hash = "#/onboarding";
+      else location.hash = "#/discover";
+    });
+  });
+
+  route("/banned", () => {
+    const uid_ = myId();
+    const ban = db.bans.find(b => b.user_id===uid_);
+    $("#app").innerHTML = `
+      <div class="card">
+        <div class="hd">
+          <h2 class="title">Accès suspendu</h2>
+          <div class="row">
+            <button class="btn" id="logout">Se déconnecter</button>
+          </div>
+        </div>
+        <div class="bd">
+          <div class="notice">
+            Ton compte est suspendu${ban?.reason ? " : <strong>"+esc(ban.reason)+"</strong>" : "."}
+            <div class="hr"></div>
+            Si c’est une erreur, contacte le support (en production).
+          </div>
+        </div>
+      </div>
+    `;
+    $("#logout").addEventListener("click", logout);
+  });
+
+  route("/onboarding", () => {
+    if(!requireAuth()) return;
+    const uid_ = myId();
+    const p = ensureProfile(uid_);
+    const sports = getSports(uid_);
+
+    $("#app").innerHTML = `
+      <div class="card">
+        <div class="hd">
+          <h2 class="title">Onboarding</h2>
+          <span class="badge">Profil</span>
+        </div>
+        <div class="bd">
+          <div class="grid cols2">
+            <section>
+              <div class="field">
+                <label>Nom affiché</label>
+                <input id="name" value="${esc(p.display_name)}" placeholder="ex: Max" />
+              </div>
+              <div class="field">
+                <label>Ville / Zone</label>
+                <input id="city" value="${esc(p.city)}" placeholder="ex: Bruxelles" />
+                <div class="hint">Optionnel dans ce prototype, utile pour filtrer ensuite.</div>
+              </div>
+              <div class="field">
+                <label>Bio</label>
+                <textarea id="bio" placeholder="Ton style, tes dispos, ton objectif...">${esc(p.bio)}</textarea>
+              </div>
+              <div class="split">
+                <div class="field">
+                  <label>Latitude (optionnel)</label>
+                  <input id="lat" value="${p.lat ?? ""}" placeholder="ex: 50.85" inputmode="decimal" />
+                </div>
+                <div class="field">
+                  <label>Longitude (optionnel)</label>
+                  <input id="lng" value="${p.lng ?? ""}" placeholder="ex: 4.35" inputmode="decimal" />
+                </div>
+              </div>
+            </section>
+
+            <aside>
+              <div class="notice">
+                <strong>Sports & niveaux</strong><br/>
+                Ajoute tennis/padel + ton niveau (1–10).
+              </div>
+              <div class="hr"></div>
+              <div class="field">
+                <label>Sport</label>
+                <select id="sport">
+                  <option value="TENNIS">Tennis</option>
+                  <option value="PADEL">Padel</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Niveau (1–10)</label>
+                <input id="level" type="number" min="1" max="10" value="5" />
+              </div>
+              <div class="split">
+                <div class="field">
+                  <label>Singles</label>
+                  <select id="singles">
+                    <option value="1">Oui</option>
+                    <option value="0">Non</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>Doubles</label>
+                  <select id="doubles">
+                    <option value="1">Oui</option>
+                    <option value="0">Non</option>
+                  </select>
+                </div>
+              </div>
+              <div class="row">
+                <button class="btn primary" id="addSport">Ajouter / Mettre à jour</button>
+                <span class="pill">Sports : <b>${sports.length}</b></span>
+              </div>
+
+              <div class="hr"></div>
+              <div class="list" id="sportList"></div>
+            </aside>
+          </div>
+
+          <div class="hr"></div>
+          <div class="row right">
+            <button class="btn good" id="save">Enregistrer</button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    const renderSports = () => {
+      const list = $("#sportList");
+      const sp = getSports(uid_);
+      if(sp.length===0){
+        list.innerHTML = `<div class="notice">Ajoute au moins 1 sport pour continuer.</div>`;
+        return;
+      }
+      list.innerHTML = sp.map(s => `
+        <div class="item">
+          <div class="avatar">${s.sport==="TENNIS" ? "T" : "P"}</div>
+          <div>
+            <h4>${s.sport==="TENNIS" ? "Tennis" : "Padel"} — Niveau ${s.level}/10</h4>
+            <p>Singles: ${s.prefers_singles ? "Oui":"Non"} • Doubles: ${s.prefers_doubles ? "Oui":"Non"}</p>
+            <div class="meta">
+              <button class="btn small danger" data-del="${s.id}">Supprimer</button>
+            </div>
+          </div>
+        </div>
+      `).join("");
+      list.querySelectorAll("[data-del]").forEach(btn=>{
+        btn.addEventListener("click", () => {
+          const id = btn.getAttribute("data-del");
+          db.sport_profiles = db.sport_profiles.filter(x => x.id !== id);
+          saveDB(db);
+          renderSports();
+          toast("Sport supprimé.");
+        });
+      });
+    };
+    renderSports();
+
+    $("#addSport").addEventListener("click", () => {
+      const sport = $("#sport").value;
+      const level = Math.max(1, Math.min(10, parseInt($("#level").value || "5", 10)));
+      const singles = $("#singles").value === "1";
+      const doubles = $("#doubles").value === "1";
+
+      let sp = db.sport_profiles.find(s => s.user_id===uid_ && s.sport===sport);
+      if(!sp){
+        sp = { id: uid(), user_id:uid_, sport, level, prefers_singles:singles, prefers_doubles:doubles, created_at: nowISO() };
+        db.sport_profiles.push(sp);
+      } else {
+        sp.level = level;
+        sp.prefers_singles = singles;
+        sp.prefers_doubles = doubles;
+      }
+      saveDB(db);
+      renderSports();
+      toast("Sport mis à jour.");
+    });
+
+    $("#save").addEventListener("click", () => {
+      const name = ($("#name").value || "").trim();
+      if(name.length < 2){ toast("Nom trop court.", "Minimum 2 caractères."); return; }
+      if(getSports(uid_).length === 0){ toast("Ajoute au moins un sport."); return; }
+      p.display_name = name;
+      p.city = ($("#city").value || "").trim();
+      p.bio = ($("#bio").value || "").trim();
+      p.lat = ($("#lat").value || "").trim() ? parseFloat($("#lat").value) : null;
+      p.lng = ($("#lng").value || "").trim() ? parseFloat($("#lng").value) : null;
+      p.avatar_initial = (name[0] || "?").toUpperCase();
+      saveDB(db);
+      toast("Profil enregistré.");
+      location.hash = "#/discover";
+    });
+  });
+
+  route("/discover", () => {
+    if(!requireAuth()) return;
+    const uid_ = myId();
+    const me = ensureProfile(uid_);
+    const mySports = getSports(uid_);
+    if(mySports.length === 0 || !(me.display_name||"").trim()){
+      location.hash = "#/onboarding";
+      return;
+    }
+
+    const sportOptions = mySports.map(s => `<option value="${s.sport}">${s.sport==="TENNIS"?"Tennis":"Padel"}</option>`).join("");
+
+    $("#app").innerHTML = `
+      <div class="grid cols2">
+        <section class="card">
+          <div class="hd">
+            <h2 class="title">Découvrir</h2>
+            <span class="badge">${hasPremium(uid_) ? "Premium : 0 € de frais" : "Gratuit : frais à la confirmation"}</span>
+          </div>
+          <div class="bd">
+            <div class="split">
+              <div class="field">
+                <label>Sport</label>
+                <select id="f_sport">${sportOptions}</select>
+              </div>
+              <div class="field">
+                <label>Niveau (±)</label>
+                <select id="f_gap">
+                  <option value="1">±1</option>
+                  <option value="2" selected>±2</option>
+                  <option value="3">±3</option>
+                  <option value="10">Large</option>
+                </select>
+              </div>
+            </div>
+            <div class="split">
+              <div class="field">
+                <label>Distance max (km)</label>
+                <select id="f_km">
+                  <option value="5">5</option>
+                  <option value="10" selected>10</option>
+                  <option value="20">20</option>
+                  <option value="50">50</option>
+                  <option value="999">Sans limite</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Mot-clé (ville / bio)</label>
+                <input id="f_q" placeholder="ex: Bruxelles" />
+              </div>
+            </div>
+            <div class="row right">
+              <button class="btn primary" id="apply">Appliquer</button>
+            </div>
+            <div class="hr"></div>
+            <div class="list" id="results"></div>
+          </div>
+        </section>
+
+        <aside class="card">
+          <div class="hd">
+            <h3 class="title">Créer un match</h3>
+            <a class="btn small primary" href="#/create">Nouveau</a>
+          </div>
+          <div class="bd">
+            <div class="notice">
+              <strong>Astuce :</strong> commence par un match ouvert. Les demandes arrivent, tu acceptes, puis la confirmation déclenche (ou non) les frais.
+            </div>
+            <div class="hr"></div>
+            <div class="item">
+              <div class="avatar">${me.avatar_initial || "?"}</div>
+              <div>
+                <h4>${esc(me.display_name)}</h4>
+                <p>${esc(me.city || "Zone non définie")} • ${esc(shortSports(uid_))}</p>
+                <div class="meta">
+                  <a class="btn small" href="#/settings">Modifier profil</a>
+                  <a class="btn small" href="#/premium">Offres Premium</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    `;
+
+    function shortSports(uid){
+      return getSports(uid).map(s => (s.sport==="TENNIS"?"T":"P")+s.level).join(" • ");
+    }
+
+    function haversineKm(lat1,lng1,lat2,lng2){
+      const R = 6371;
+      const toRad = (x)=> x*Math.PI/180;
+      const dLat = toRad(lat2-lat1), dLng=toRad(lng2-lng1);
+      const a = Math.sin(dLat/2)**2 + Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLng/2)**2;
+      return 2*R*Math.asin(Math.sqrt(a));
+    }
+
+    function compatScore(my, other, sport, gap){
+      const mySp = db.sport_profiles.find(s=> s.user_id===my.user_id && s.sport===sport);
+      const otSp = db.sport_profiles.find(s=> s.user_id===other.user_id && s.sport===sport);
+      if(!mySp || !otSp) return 0;
+      const lvlDelta = Math.abs(mySp.level - otSp.level);
+      let score = 100 - Math.min(60, lvlDelta*15);
+      // distance (if available)
+      if(my.lat!=null && my.lng!=null && other.lat!=null && other.lng!=null){
+        const km = haversineKm(my.lat,my.lng, other.lat, other.lng);
+        score -= Math.min(35, km*2);
+      }
+      // bio signal
+      if((other.bio||"").length > 20) score += 5;
+      return Math.max(0, Math.min(100, Math.round(score)));
+    }
+
+    function apply(){
+      const sport = $("#f_sport").value;
+      const gap = parseInt($("#f_gap").value,10);
+      const kmMax = parseFloat($("#f_km").value);
+      const q = ($("#f_q").value||"").trim().toLowerCase();
+
+      const mySp = db.sport_profiles.find(s=> s.user_id===uid_ && s.sport===sport);
+      const res = [];
+
+      for(const p of db.profiles){
+        if(p.user_id === uid_) continue;
+        if(isBanned(p.user_id)) continue;
+        if(blocked(uid_, p.user_id) || blocked(p.user_id, uid_)) continue;
+
+        const sp = db.sport_profiles.find(s=> s.user_id===p.user_id && s.sport===sport);
+        if(!sp) continue;
+
+        const delta = Math.abs(sp.level - mySp.level);
+        if(delta > gap) continue;
+
+        // keyword filter
+        const hay = ((p.city||"")+" "+(p.bio||"")+" "+(p.display_name||"")).toLowerCase();
+        if(q && !hay.includes(q)) continue;
+
+        // distance filter
+        let km = null;
+        if(me.lat!=null && me.lng!=null && p.lat!=null && p.lng!=null){
+          km = haversineKm(me.lat, me.lng, p.lat, p.lng);
+          if(kmMax !== 999 && km > kmMax) continue;
+        } else {
+          if(kmMax !== 999 && kmMax <= 20) {
+            // if user sets tight distance but no coords, keep anyway (prototype)
+          }
+        }
+
+        const score = compatScore(me, p, sport, gap);
+        res.push({ p, sp, km, score });
+      }
+
+      res.sort((a,b)=> b.score - a.score);
+
+      const list = $("#results");
+      if(res.length===0){
+        list.innerHTML = `<div class="notice">Aucun profil trouvé avec ces filtres. Essaie d’élargir la distance ou le niveau.</div>`;
+        return;
+      }
+
+      list.innerHTML = res.map(r => `
+        <div class="item">
+          <div class="avatar">${esc(r.p.avatar_initial || (r.p.display_name||"?")[0] || "?")}</div>
+          <div class="spacer">
+            <h4>${esc(r.p.display_name || "Joueur")}</h4>
+            <p>${esc(r.p.city || "Zone inconnue")} • ${r.sp.sport==="TENNIS"?"Tennis":"Padel"} niveau ${r.sp.level}/10</p>
+            <div class="meta">
+              <span class="badge ok">Compatibilité ${r.score}/100</span>
+              ${r.km!=null ? `<span class="badge">${r.km.toFixed(1)} km</span>` : `<span class="badge">distance n/a</span>`}
+              <a class="btn small" href="#/players/${r.p.user_id}">Voir profil</a>
+              <a class="btn small primary" href="#/create?prefSport=${r.sp.sport}&prefLevelMin=${Math.max(1,r.sp.level-1)}&prefLevelMax=${Math.min(10,r.sp.level+1)}">Proposer un match</a>
+            </div>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    $("#apply").addEventListener("click", apply);
+    apply();
+  });
+
+  route("/players/:id", ({id}) => {
+    if(!requireAuth()) return;
+    const uid_ = myId();
+    if(id===uid_) { location.hash="#/settings"; return; }
+    const p = getProfile(id);
+    if(!p || isBanned(id) || blocked(uid_, id) || blocked(id, uid_)){
+      $("#app").innerHTML = `<div class="card"><div class="hd"><h2 class="title">Profil indisponible</h2></div><div class="bd"><div class="notice">Ce profil n’est pas accessible.</div></div></div>`;
+      return;
+    }
+    const sports = getSports(id);
+    $("#app").innerHTML = `
+      <div class="grid cols2">
+        <section class="card">
+          <div class="hd">
+            <h2 class="title">Profil</h2>
+            <div class="row">
+              <a class="btn small" href="#/discover">Retour</a>
+              <button class="btn small danger" id="block">Bloquer</button>
+              <button class="btn small" id="report">Signaler</button>
+            </div>
+          </div>
+          <div class="bd">
+            <div class="item">
+              <div class="avatar">${esc(p.avatar_initial || (p.display_name||"?")[0] || "?")}</div>
+              <div>
+                <h4>${esc(p.display_name || "Joueur")}</h4>
+                <p>${esc(p.city || "Zone inconnue")}</p>
+                <div class="meta">
+                  ${sports.map(s => `<span class="badge">${s.sport==="TENNIS"?"Tennis":"Padel"} ${s.level}/10</span>`).join("")}
+                </div>
+              </div>
+            </div>
+            <div class="hr"></div>
+            <div class="notice">${esc(p.bio || "Bio non renseignée.")}</div>
+            <div class="hr"></div>
+            <div class="row">
+              <a class="btn primary" href="#/create?prefSport=${sports[0]?.sport || "TENNIS"}&prefLevelMin=4&prefLevelMax=7">Proposer un match</a>
+              <a class="btn" href="#/matches">Voir les matchs</a>
+            </div>
+          </div>
+        </section>
+        <aside class="card">
+          <div class="hd"><h3 class="title">Bonnes pratiques</h3></div>
+          <div class="bd">
+            <div class="notice">
+              <strong>Confiance</strong><br/>
+              Utilise le chat uniquement après acceptation. En cas de problème : blocage + signalement.
+            </div>
+            <div class="hr"></div>
+            <div class="notice">
+              <strong>Frais</strong><br/>
+              Les frais s’appliquent au moment de confirmer un match si tu n’es pas Premium.
+            </div>
+          </div>
+        </aside>
+      </div>
+    `;
+
+    $("#block").addEventListener("click", () => {
+      if(confirm("Bloquer ce profil ?")){
+        db.blocks.push({ id: uid(), blocker_id: uid_, blocked_id: id, at: nowISO() });
+        saveDB(db);
+        toast("Profil bloqué.");
+        location.hash = "#/discover";
+      }
+    });
+    $("#report").addEventListener("click", () => {
+      const reason = prompt("Raison du signalement (démo) :");
+      if(!reason) return;
+      db.reports.push({ id: uid(), reporter_id: uid_, target_user_id: id, reason, status:"OPEN", at: nowISO() });
+      saveDB(db);
+      toast("Signalement envoyé.", "Merci.");
+    });
+  });
+
+  route("/create", ({query}) => {
+    if(!requireAuth()) return;
+    const uid_ = myId();
+    const me = ensureProfile(uid_);
+    const sports = getSports(uid_);
+    if(sports.length===0){ location.hash="#/onboarding"; return; }
+
+    const prefSport = query.prefSport || sports[0].sport;
+    const prefLevelMin = parseInt(query.prefLevelMin || "4",10);
+    const prefLevelMax = parseInt(query.prefLevelMax || "7",10);
+
+    const sportOptions = sports.map(s => `<option value="${s.sport}" ${s.sport===prefSport?"selected":""}>${s.sport==="TENNIS"?"Tennis":"Padel"}</option>`).join("");
+
+    $("#app").innerHTML = `
+      <div class="grid cols2">
+        <section class="card">
+          <div class="hd">
+            <h2 class="title">Créer un match</h2>
+            <a class="btn small" href="#/matches">Mes matchs</a>
+          </div>
+          <div class="bd">
+            <div class="split">
+              <div class="field">
+                <label>Sport</label>
+                <select id="sport">${sportOptions}</select>
+              </div>
+              <div class="field">
+                <label>Format</label>
+                <select id="format">
+                  <option value="SINGLE">Simple</option>
+                  <option value="DOUBLE">Double</option>
+                </select>
+              </div>
+            </div>
+            <div class="split">
+              <div class="field">
+                <label>Date & heure</label>
+                <input id="starts" type="datetime-local" />
+              </div>
+              <div class="field">
+                <label>Durée (min)</label>
+                <input id="duration" type="number" min="30" max="240" value="90" />
+              </div>
+            </div>
+            <div class="field">
+              <label>Lieu (texte)</label>
+              <input id="loc" placeholder="ex: Bois de la Cambre / proche..." />
+            </div>
+            <div class="split">
+              <div class="field">
+                <label>Niveau min (1–10)</label>
+                <input id="lmin" type="number" min="1" max="10" value="${prefLevelMin}" />
+              </div>
+              <div class="field">
+                <label>Niveau max (1–10)</label>
+                <input id="lmax" type="number" min="1" max="10" value="${prefLevelMax}" />
+              </div>
+            </div>
+            <div class="row right">
+              <button class="btn good" id="publish">Publier</button>
+            </div>
+          </div>
+        </section>
+
+        <aside class="card">
+          <div class="hd"><h3 class="title">Rappel monétisation</h3></div>
+          <div class="bd">
+            <div class="notice">
+              <strong>Au moment de confirmer :</strong><br/>
+              ${hasPremium(uid_) ? "Tu es Premium : 0 €." : "Tu es en gratuit : frais "+centsToEUR(db.settings.reservation_fee_cents)+"."}
+            </div>
+            <div class="hr"></div>
+            <div class="notice">
+              <strong>Conseil V1 :</strong><br/>
+              Mets une description de lieu simple. Les clubs viennent plus tard (phase 2).
+            </div>
+          </div>
+        </aside>
+      </div>
+    `;
+
+    // Default datetime = tomorrow 19:00
+    const d = new Date(Date.now()+24*3600*1000);
+    d.setHours(19,0,0,0);
+    $("#starts").value = toLocalInput(d);
+
+    $("#publish").addEventListener("click", () => {
+      const sport = $("#sport").value;
+      const isDoubles = $("#format").value === "DOUBLE";
+      const starts = $("#starts").value;
+      if(!starts){ toast("Choisis une date/heure."); return; }
+      const starts_at = new Date(starts).toISOString();
+      const duration_min = Math.max(30, Math.min(240, parseInt($("#duration").value||"90",10)));
+      const location_text = ($("#loc").value||"").trim();
+      const level_min = clampInt($("#lmin").value,1,10);
+      const level_max = clampInt($("#lmax").value,1,10);
+      if(level_min > level_max){ toast("Niveau min > niveau max."); return; }
+
+      const m = {
+        id: uid(),
+        creator_id: uid_,
+        sport,
+        starts_at,
+        duration_min,
+        is_doubles: isDoubles,
+        location_text,
+        lat: me.lat ?? null,
+        lng: me.lng ?? null,
+        level_min,
+        level_max,
+        status: "OPEN",
+        created_at: nowISO()
+      };
+      db.matches.push(m);
+      saveDB(db);
+      toast("Match publié.", "Visible dans Matchs.");
+      location.hash = `#/match/${m.id}`;
+    });
+
+    function toLocalInput(date){
+      const pad = (n)=> String(n).padStart(2,"0");
+      const yyyy = date.getFullYear();
+      const mm = pad(date.getMonth()+1);
+      const dd = pad(date.getDate());
+      const hh = pad(date.getHours());
+      const mi = pad(date.getMinutes());
+      return `${yyyy}-${mm}-${dd}T${hh}:${mi}`;
+    }
+    function clampInt(v,min,max){
+      const n = parseInt(v||"",10);
+      if(isNaN(n)) return min;
+      return Math.max(min, Math.min(max, n));
+    }
+  });
+
+  route("/matches", () => {
+    if(!requireAuth()) return;
+    const uid_ = myId();
+
+    const myCreated = db.matches.filter(m => m.creator_id===uid_).sort((a,b)=> new Date(a.starts_at)-new Date(b.starts_at));
+    const open = db.matches.filter(m => m.status==="OPEN" && m.creator_id!==uid_).sort((a,b)=> new Date(a.starts_at)-new Date(b.starts_at));
+    const myRequests = db.requests.filter(r => r.requester_id===uid_).sort((a,b)=> new Date(b.created_at)-new Date(a.created_at));
+
+    $("#app").innerHTML = `
+      <div class="grid cols2">
+        <section class="card">
+          <div class="hd">
+            <h2 class="title">Matchs</h2>
+            <a class="btn small primary" href="#/create">Créer</a>
+          </div>
+          <div class="bd">
+            <div class="row">
+              <span class="badge">Mes matchs créés : ${myCreated.length}</span>
+              <span class="badge">Matchs ouverts : ${open.length}</span>
+              <span class="badge">Mes demandes : ${myRequests.length}</span>
+            </div>
+            <div class="hr"></div>
+
+            <h3 class="title" style="font-size:16px;margin:0 0 10px">Mes matchs (créés)</h3>
+            <div class="list">${renderMatchList(myCreated, {mine:true})}</div>
+
+            <div class="hr"></div>
+            <h3 class="title" style="font-size:16px;margin:0 0 10px">Matchs ouverts</h3>
+            <div class="list">${renderMatchList(open, {mine:false})}</div>
+          </div>
+        </section>
+
+        <aside class="card">
+          <div class="hd"><h3 class="title">Mes demandes</h3></div>
+          <div class="bd">
+            <div class="list">
+              ${myRequests.length ? myRequests.map(r => {
+                const m = db.matches.find(x=> x.id===r.match_id);
+                if(!m) return "";
+                return `
+                  <div class="item">
+                    <div class="avatar">${m.sport==="TENNIS"?"T":"P"}</div>
+                    <div class="spacer">
+                      <h4>${m.sport==="TENNIS"?"Tennis":"Padel"} — ${fmtDateTime(m.starts_at)}</h4>
+                      <p>${esc(m.location_text || "Lieu à définir")} • Statut demande: <b>${esc(r.status)}</b></p>
+                      <div class="meta">
+                        <a class="btn small" href="#/match/${m.id}">Ouvrir</a>
+                      </div>
+                    </div>
+                  </div>
+                `;
+              }).join("") : `<div class="notice">Aucune demande pour l’instant.</div>`}
+            </div>
+          </div>
+        </aside>
+      </div>
+    `;
+
+    function renderMatchList(list, opts){
+      if(!list.length) return `<div class="notice">Aucun match ici pour l’instant.</div>`;
+      return list.map(m => {
+        const creator = getProfile(m.creator_id);
+        const statusBadge = m.status==="OPEN" ? `<span class="badge ok">OPEN</span>` :
+                           m.status==="CONFIRMED" ? `<span class="badge ok">CONFIRMED</span>` :
+                           m.status==="PENDING_CONFIRMATION" ? `<span class="badge warn">PENDING</span>` :
+                           `<span class="badge">${esc(m.status)}</span>`;
+        return `
+          <div class="item">
+            <div class="avatar">${m.sport==="TENNIS"?"T":"P"}</div>
+            <div class="spacer">
+              <h4>${m.sport==="TENNIS"?"Tennis":"Padel"} ${m.is_doubles ? "• Double" : "• Simple"} — ${fmtDateTime(m.starts_at)}</h4>
+              <p>${esc(m.location_text || "Lieu à définir")} • Niveau ${m.level_min||1}-${m.level_max||10} • Créé par ${esc(creator?.display_name || "—")}</p>
+              <div class="meta">
+                ${statusBadge}
+                <a class="btn small" href="#/match/${m.id}">Détails</a>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+  });
+
+  route("/match/:id", ({id}) => {
+    if(!requireAuth()) return;
+    const uid_ = myId();
+    const m = db.matches.find(x => x.id===id);
+    if(!m){
+      $("#app").innerHTML = pageNotFound("Match introuvable.");
+      return;
+    }
+    const creator = getProfile(m.creator_id);
+    const isMine = m.creator_id === uid_;
+    const myReq = db.requests.find(r => r.match_id===m.id && r.requester_id===uid_) || null;
+    const reqs = db.requests.filter(r => r.match_id===m.id).sort((a,b)=> new Date(b.created_at)-new Date(a.created_at));
+
+    const canJoin = !isMine && m.status==="OPEN" && !myReq && !blocked(uid_, m.creator_id) && !blocked(m.creator_id, uid_);
+    const canWithdraw = myReq && (myReq.status==="REQUESTED");
+    const canConfirm = myReq && (myReq.status==="ACCEPTED") && (m.status==="PENDING_CONFIRMATION");
+    const premium = hasPremium(uid_);
+    const fee = db.settings.reservation_fee_cents;
+
+    $("#app").innerHTML = `
+      <div class="grid cols2">
+        <section class="card">
+          <div class="hd">
+            <h2 class="title">Détail match</h2>
+            <div class="row">
+              <a class="btn small" href="#/matches">Retour</a>
+              ${isMine ? `<span class="badge">Organisateur</span>` : `<span class="badge">Participant</span>`}
+            </div>
+          </div>
+          <div class="bd">
+            <div class="item">
+              <div class="avatar">${m.sport==="TENNIS"?"T":"P"}</div>
+              <div class="spacer">
+                <h4>${m.sport==="TENNIS"?"Tennis":"Padel"} ${m.is_doubles ? "• Double" : "• Simple"}</h4>
+                <p><b>${fmtDateTime(m.starts_at)}</b> • ${esc(m.location_text || "Lieu à définir")}</p>
+                <div class="meta">
+                  <span class="badge">Niveau ${m.level_min||1}-${m.level_max||10}</span>
+                  <span class="badge">${esc(m.status)}</span>
+                  <span class="badge">${m.duration_min} min</span>
+                </div>
+                <div class="meta" style="margin-top:10px">
+                  <span class="badge">Organisateur: ${esc(creator?.display_name || "—")}</span>
+                  ${creator?.city ? `<span class="badge">${esc(creator.city)}</span>` : ``}
+                </div>
+              </div>
+            </div>
+
+            <div class="hr"></div>
+
+            <div class="row">
+              ${canJoin ? `<button class="btn primary" id="join">Rejoindre</button>` : ``}
+              ${canWithdraw ? `<button class="btn danger" id="withdraw">Retirer ma demande</button>` : ``}
+              ${canConfirm ? `<button class="btn good" id="confirm">Confirmer ${premium ? "(0 €)" : "(" + centsToEUR(fee) + ")"}</button>` : ``}
+              ${(!premium && !isMine) ? `<a class="btn" href="#/premium">Passer Premium (0 € frais)</a>` : ``}
+              ${(!isMine) ? `<button class="btn" id="report">Signaler l’organisateur</button>` : ``}
+            </div>
+
+            ${myReq ? `
+              <div class="hr"></div>
+              <div class="notice">
+                <strong>Ta demande :</strong> ${esc(myReq.status)}<br/>
+                ${myReq.status==="ACCEPTED" ? "Tu peux confirmer. La confirmation déclenche le frais si tu n’es pas Premium." :
+                  myReq.status==="REQUESTED" ? "En attente de réponse de l’organisateur." : ""}
+              </div>
+            ` : ""}
+
+            ${isMine ? `
+              <div class="hr"></div>
+              <h3 class="title" style="font-size:16px;margin:0 0 10px">Demandes</h3>
+              <div class="list" id="reqList">${renderRequests()}</div>
+            ` : ""}
+
+            <div class="hr"></div>
+            <div class="notice">
+              <strong>Politique d’annulation (V1) :</strong> annulation > ${db.settings.cancellation_policy_hours}h : OK. En production, on ajoutera remboursement/penalties no-show.
+            </div>
+          </div>
+        </section>
+
+        <aside class="card">
+          <div class="hd"><h3 class="title">États du match</h3></div>
+          <div class="bd">
+            <div class="list">
+              ${step("OPEN", "Le match est visible. Les joueurs peuvent demander à rejoindre.")}
+              ${step("PENDING_CONFIRMATION", "Une demande est acceptée. Le joueur doit confirmer (et payer si non Premium).")}
+              ${step("CONFIRMED", "Match confirmé. Chat disponible entre les participants.")}
+            </div>
+          </div>
+        </aside>
+      </div>
+    `;
+
+    if($("#join")){
+      $("#join").addEventListener("click", () => {
+        if(m.status!=="OPEN"){ toast("Match non disponible."); return; }
+        db.requests.push({ id: uid(), match_id:m.id, requester_id:uid_, status:"REQUESTED", created_at: nowISO() });
+        saveDB(db);
+        toast("Demande envoyée.");
+        render();
+      });
+    }
+
+    if($("#withdraw")){
+      $("#withdraw").addEventListener("click", () => {
+        if(!myReq || myReq.status!=="REQUESTED") return;
+        myReq.status = "WITHDRAWN";
+        saveDB(db);
+        toast("Demande retirée.");
+        render();
+      });
+    }
+
+    if($("#confirm")){
+      $("#confirm").addEventListener("click", () => {
+        if(!canConfirm){ toast("Impossible de confirmer."); return; }
+        if(premium){
+          finalizeConfirmation(uid_, m.id, 0, "Premium");
+          return;
+        }
+        // Simulated payment flow
+        if(confirm(`Confirmer ce match et payer les frais Tenrally (${centsToEUR(fee)}) ? (démo)`)){
+          // record payment
+          db.payments.push({
+            id: uid(), user_id: uid_, match_id: m.id, type:"RESERVATION_FEE",
+            amount_cents: fee, currency:"EUR", provider:"demo", provider_payment_id:"demo_"+uid(),
+            status:"succeeded", created_at: nowISO()
+          });
+          finalizeConfirmation(uid_, m.id, fee, "Paiement OK");
+        }
+      });
+    }
+
+    if($("#report")){
+      $("#report").addEventListener("click", () => {
+        const reason = prompt("Raison du signalement (démo) :");
+        if(!reason) return;
+        db.reports.push({ id: uid(), reporter_id: uid_, target_user_id: m.creator_id, reason, status:"OPEN", at: nowISO() });
+        saveDB(db);
+        toast("Signalement envoyé.");
+      });
+    }
+
+    function finalizeConfirmation(requesterId, matchId, amountCents, why){
+      const req = db.requests.find(r => r.match_id===matchId && r.requester_id===requesterId);
+      if(!req || req.status!=="ACCEPTED"){ toast("La demande n’est pas acceptée."); return; }
+      m.status = "CONFIRMED";
+      saveDB(db);
+
+      // Create conversation if none
+      let conv = db.conversations.find(c => c.match_id===matchId);
+      if(!conv){
+        conv = { id: uid(), match_id: matchId, created_at: nowISO() };
+        db.conversations.push(conv);
+        db.conversation_members.push({ conversation_id: conv.id, user_id: requesterId });
+        db.conversation_members.push({ conversation_id: conv.id, user_id: m.creator_id });
+        db.messages.push({ id: uid(), conversation_id: conv.id, sender_id: m.creator_id, body:"Salut ! Match confirmé. On se retrouve sur place ?", created_at: nowISO() });
+      }
+      saveDB(db);
+      toast("Match confirmé.", premium ? "Premium : 0 €." : `Frais payés : ${centsToEUR(amountCents)}.`);
+      location.hash = "#/messages";
+    }
+
+    function renderRequests(){
+      if(reqs.length===0) return `<div class="notice">Aucune demande pour l’instant.</div>`;
+      return reqs.map(r => {
+        const pr = getProfile(r.requester_id);
+        const status = r.status;
+        const canAccept = (status==="REQUESTED") && (m.status==="OPEN");
+        const canReject = (status==="REQUESTED");
+        const who = esc(pr?.display_name || "Joueur");
+        return `
+          <div class="item">
+            <div class="avatar">${esc(pr?.avatar_initial || who[0] || "?")}</div>
+            <div class="spacer">
+              <h4>${who}</h4>
+              <p>Statut : <b>${esc(status)}</b></p>
+              <div class="meta">
+                <a class="btn small" href="#/players/${r.requester_id}">Voir profil</a>
+                ${canAccept ? `<button class="btn small good" data-acc="${r.id}">Accepter</button>` : ``}
+                ${canReject ? `<button class="btn small danger" data-rej="${r.id}">Refuser</button>` : ``}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    // bind accept/reject if organizer
+    if(isMine){
+      $("#reqList").querySelectorAll("[data-acc]").forEach(btn=>{
+        btn.addEventListener("click", () => {
+          const rid = btn.getAttribute("data-acc");
+          const r = db.requests.find(x=> x.id===rid);
+          if(!r || r.status!=="REQUESTED") return;
+          r.status = "ACCEPTED";
+          m.status = "PENDING_CONFIRMATION";
+          saveDB(db);
+          toast("Demande acceptée.", "En attente de confirmation.");
+          render();
+        });
+      });
+      $("#reqList").querySelectorAll("[data-rej]").forEach(btn=>{
+        btn.addEventListener("click", () => {
+          const rid = btn.getAttribute("data-rej");
+          const r = db.requests.find(x=> x.id===rid);
+          if(!r || r.status!=="REQUESTED") return;
+          r.status = "REJECTED";
+          saveDB(db);
+          toast("Demande refusée.");
+          render();
+        });
+      });
+    }
+
+    function step(code, text){
+      return `
+        <div class="item">
+          <div class="avatar">${esc(code[0])}</div>
+          <div>
+            <h4 class="mono">${esc(code)}</h4>
+            <p>${esc(text)}</p>
+          </div>
+        </div>
+      `;
+    }
+  });
+
+  route("/messages", () => {
+    if(!requireAuth()) return;
+    const uid_ = myId();
+    const convIds = db.conversation_members.filter(cm => cm.user_id===uid_).map(cm => cm.conversation_id);
+    const convs = db.conversations.filter(c => convIds.includes(c.id)).sort((a,b)=> new Date(b.created_at)-new Date(a.created_at));
+
+    $("#app").innerHTML = `
+      <div class="grid cols2">
+        <section class="card">
+          <div class="hd">
+            <h2 class="title">Messages</h2>
+            <span class="badge">${convs.length} conversation(s)</span>
+          </div>
+          <div class="bd">
+            <div class="list">
+              ${convs.length ? convs.map(c => {
+                const m = db.matches.find(x=> x.id===c.match_id);
+                const otherId = (db.conversation_members.filter(cm => cm.conversation_id===c.id).map(x=>x.user_id).find(x=>x!==uid_)) || null;
+                const other = otherId ? getProfile(otherId) : null;
+                const last = [...db.messages].reverse().find(msg => msg.conversation_id===c.id) || null;
+                return `
+                  <div class="item">
+                    <div class="avatar">${m ? (m.sport==="TENNIS"?"T":"P") : "💬"}</div>
+                    <div class="spacer">
+                      <h4>${esc(other?.display_name || "Conversation")}</h4>
+                      <p>${m ? `${m.sport==="TENNIS"?"Tennis":"Padel"} • ${fmtDateTime(m.starts_at)} • ${esc(m.location_text||"")}` : ""}</p>
+                      <p class="hint">${last ? esc(last.body).slice(0,80) : "—"}</p>
+                      <div class="meta">
+                        <a class="btn small primary" href="#/chat/${c.id}">Ouvrir</a>
+                        ${m ? `<a class="btn small" href="#/match/${m.id}">Match</a>` : ``}
+                      </div>
+                    </div>
+                  </div>
+                `;
+              }).join("") : `<div class="notice">Aucune conversation. Confirme un match pour ouvrir un chat.</div>`}
+            </div>
+          </div>
+        </section>
+
+        <aside class="card">
+          <div class="hd"><h3 class="title">Rappel</h3></div>
+          <div class="bd">
+            <div class="notice">
+              <strong>Chat = après acceptation.</strong><br/>
+              Cela réduit le spam et protège l’expérience.
+            </div>
+            <div class="hr"></div>
+            <div class="notice">
+              <strong>Modération</strong><br/>
+              Blocage et signalement sont disponibles via les profils.
+            </div>
+          </div>
+        </aside>
+      </div>
+    `;
+  });
+
+  route("/chat/:id", ({id}) => {
+    if(!requireAuth()) return;
+    const uid_ = myId();
+    const isMember = db.conversation_members.some(cm => cm.conversation_id===id && cm.user_id===uid_);
+    if(!isMember){
+      $("#app").innerHTML = pageNotFound("Conversation inaccessible.");
+      return;
+    }
+    const conv = db.conversations.find(c=> c.id===id);
+    const match = conv?.match_id ? db.matches.find(m=> m.id===conv.match_id) : null;
+    const otherId = db.conversation_members.filter(cm => cm.conversation_id===id).map(x=>x.user_id).find(x=>x!==uid_) || null;
+    const other = otherId ? getProfile(otherId) : null;
+
+    const msgs = db.messages.filter(m=> m.conversation_id===id).sort((a,b)=> new Date(a.created_at)-new Date(b.created_at));
+
+    $("#app").innerHTML = `
+      <div class="card">
+        <div class="hd">
+          <div>
+            <h2 class="title">Chat — ${esc(other?.display_name || "Conversation")}</h2>
+            <div class="kpi">${match ? `${match.sport==="TENNIS"?"Tennis":"Padel"} • ${fmtDateTime(match.starts_at)} • ${esc(match.location_text||"")}` : ""}</div>
+          </div>
+          <div class="row">
+            <a class="btn small" href="#/messages">Retour</a>
+            ${otherId ? `<a class="btn small" href="#/players/${otherId}">Profil</a>` : ``}
+          </div>
+        </div>
+        <div class="bd">
+          <div class="list" id="msgList">
+            ${msgs.map(m => renderMsg(m, uid_)).join("")}
+          </div>
+          <div class="hr"></div>
+          <div class="row">
+            <input id="msg" placeholder="Écrire un message..." />
+            <button class="btn primary" id="send">Envoyer</button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    function renderMsg(m, meId){
+      const mine = m.sender_id===meId;
+      const sender = getProfile(m.sender_id);
+      return `
+        <div class="item" style="justify-content:${mine?'flex-end':'flex-start'}">
+          ${mine ? "" : `<div class="avatar">${esc(sender?.avatar_initial || "?" )}</div>`}
+          <div style="max-width: 760px">
+            <div class="badge ${mine?'ok':''}">${mine ? "Moi" : esc(sender?.display_name || "—")} • ${fmtDateTime(m.created_at)}</div>
+            <div style="margin-top:6px; border:1px solid var(--border); background: rgba(255,255,255,.03); padding:10px 12px; border-radius:12px;">
+              ${esc(m.body)}
+            </div>
+          </div>
+          ${mine ? `<div class="avatar">${esc(getProfile(meId)?.avatar_initial || "?" )}</div>` : ``}
+        </div>
+      `;
+    }
+
+    $("#send").addEventListener("click", send);
+    $("#msg").addEventListener("keydown", (e)=>{ if(e.key==="Enter") send(); });
+
+    function send(){
+      const body = ($("#msg").value||"").trim();
+      if(!body) return;
+      db.messages.push({ id: uid(), conversation_id:id, sender_id: uid_, body, created_at: nowISO() });
+      saveDB(db);
+      $("#msg").value = "";
+      toast("Envoyé.");
+      render();
+      // jump to bottom
+      setTimeout(()=> window.scrollTo({top:document.body.scrollHeight, behavior:"smooth"}), 20);
+    }
+  });
+
+  route("/premium", () => {
+    if(!requireAuth()) return;
+    const uid_ = myId();
+    const s = db.settings;
+    const sub = getSubscription(uid_) || { plan:"NONE", status:"inactive" };
+    const premium = hasPremium(uid_);
+
+    const annualEnabled = !!s.promo_annual_enabled;
+
+    $("#app").innerHTML = `
+      <div class="grid cols2">
+        <section class="card">
+          <div class="hd">
+            <h2 class="title">Premium</h2>
+            <span class="badge ${premium?'ok':''}">${premium ? "Premium actif" : "Gratuit"}</span>
+          </div>
+          <div class="bd">
+            <div class="notice">
+              <strong>Avec Premium :</strong> 0 € de frais sur les confirmations de matchs.
+              <div class="hr"></div>
+              <strong>Sans Premium :</strong> frais de <b>${centsToEUR(s.reservation_fee_cents)}</b> à chaque confirmation.
+            </div>
+
+            <div class="hr"></div>
+
+            <div class="grid cols2" style="grid-template-columns:1fr 1fr">
+              <div class="card" style="box-shadow:none">
+                <div class="hd">
+                  <h3 class="title" style="font-size:16px">Mensuel</h3>
+                  <span class="badge">${centsToEUR(s.premium_monthly_cents)}/mois</span>
+                </div>
+                <div class="bd">
+                  <div class="notice">
+                    Résiliable à tout moment.<br/>Effet : fin de période.
+                  </div>
+                  <div class="hr"></div>
+                  <button class="btn good" id="buyMonthly" ${premium ? "disabled" : ""}>Prendre le mensuel</button>
+                </div>
+              </div>
+
+              <div class="card" style="box-shadow:none">
+                <div class="hd">
+                  <h3 class="title" style="font-size:16px">Annuel promo</h3>
+                  <span class="badge">${centsToEUR(s.premium_annual_cents)}/an</span>
+                </div>
+                <div class="bd">
+                  <div class="notice">
+                    Équivaut à <b>7,99 €/mois</b>.<br/>
+                    <strong>Engagement 12 mois</strong> • Paiement unique • Non remboursable.
+                  </div>
+                  <div class="hr"></div>
+                  <button class="btn good" id="buyAnnual" ${annualEnabled && !premium ? "" : "disabled"}>${annualEnabled ? "Prendre l’annuel" : "Indisponible"}</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="hr"></div>
+
+            <h3 class="title" style="font-size:16px;margin:0 0 10px">Mon abonnement</h3>
+            <div class="item">
+              <div class="avatar">★</div>
+              <div class="spacer">
+                <h4>Statut</h4>
+                <p>
+                  Plan : <b>${esc(sub.plan)}</b> • Statut : <b>${esc(sub.status)}</b><br/>
+                  Fin de période : <b>${sub.current_period_end ? fmtDateTime(sub.current_period_end) : "—"}</b><br/>
+                  Renouvellement : <b>${sub.cancel_at_period_end ? "Désactivé" : "Actif"}</b>
+                </p>
+                <div class="meta">
+                  <button class="btn" id="cancelRenew">Annuler le renouvellement</button>
+                  <button class="btn danger" id="resetSub">Réinitialiser (démo)</button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <aside class="card">
+          <div class="hd"><h3 class="title">Rentabilité</h3></div>
+          <div class="bd">
+            <div class="notice">
+              Avec un frais à <b>${centsToEUR(s.reservation_fee_cents)}</b>, le Premium mensuel devient intéressant dès ~
+              <b>${Math.ceil(s.premium_monthly_cents / s.reservation_fee_cents)}</b> confirmations / mois.
+            </div>
+            <div class="hr"></div>
+            <div class="notice">
+              <strong>Démo paiements</strong><br/>
+              Les achats sont simulés. En production : Stripe + webhooks.
+            </div>
+          </div>
+        </aside>
+      </div>
+    `;
+
+    $("#buyMonthly").addEventListener("click", () => {
+      if(premium) return;
+      if(confirm(`Activer Premium mensuel (${centsToEUR(s.premium_monthly_cents)}/mois) ? (démo)`)){
+        activateSub("MONTHLY", "monthly");
+        toast("Premium mensuel activé.", "0 € de frais.");
+        render();
+      }
+    });
+
+    $("#buyAnnual").addEventListener("click", () => {
+      if(premium) return;
+      if(!annualEnabled){ toast("Offre indisponible."); return; }
+      if(confirm(`Activer Premium annuel (${centsToEUR(s.premium_annual_cents)}/an) ? Engagement 12 mois. (démo)`)){
+        activateSub("ANNUAL_PROMO", "annual");
+        toast("Premium annuel activé.", "0 € de frais.");
+        render();
+      }
+    });
+
+    $("#cancelRenew").addEventListener("click", () => {
+      const sub = getSubscription(uid_);
+      if(!sub || sub.status!=="active"){ toast("Aucun abonnement actif."); return; }
+      sub.cancel_at_period_end = true;
+      sub.updated_at = nowISO();
+      saveDB(db);
+      toast("Renouvellement annulé.", "Accès jusqu’à fin de période.");
+      render();
+    });
+
+    $("#resetSub").addEventListener("click", () => {
+      if(!confirm("Réinitialiser abonnement (démo) ?")) return;
+      let sub = getSubscription(uid_);
+      if(!sub){
+        sub = { user_id:uid_, plan:"NONE", status:"inactive", current_period_end:null, cancel_at_period_end:false, provider:"demo", created_at: nowISO(), updated_at: nowISO() };
+        db.subscriptions.push(sub);
+      }
+      sub.plan="NONE"; sub.status="inactive"; sub.current_period_end=null; sub.cancel_at_period_end=false;
+      sub.updated_at = nowISO();
+      saveDB(db);
+      toast("Abonnement réinitialisé.");
+      render();
+    });
+
+    function activateSub(plan, mode){
+      let sub = getSubscription(uid_);
+      if(!sub){
+        sub = { user_id:uid_, plan:"NONE", status:"inactive", current_period_end:null, cancel_at_period_end:false, provider:"demo", created_at: nowISO(), updated_at: nowISO() };
+        db.subscriptions.push(sub);
+      }
+      sub.plan = plan;
+      sub.status = "active";
+      sub.cancel_at_period_end = false;
+
+      const end = new Date();
+      if(mode==="monthly"){
+        end.setMonth(end.getMonth()+1);
+        sub.current_period_end = end.toISOString();
+        // record payment (demo)
+        db.payments.push({ id: uid(), user_id: uid_, match_id:null, type:"PREMIUM_PURCHASE", amount_cents:s.premium_monthly_cents, currency:"EUR", provider:"demo", provider_payment_id:"demo_sub_m_"+uid(), status:"succeeded", created_at: nowISO() });
+      } else {
+        end.setFullYear(end.getFullYear()+1);
+        sub.current_period_end = end.toISOString();
+        db.payments.push({ id: uid(), user_id: uid_, match_id:null, type:"PREMIUM_PURCHASE", amount_cents:s.premium_annual_cents, currency:"EUR", provider:"demo", provider_payment_id:"demo_sub_a_"+uid(), status:"succeeded", created_at: nowISO() });
+      }
+      sub.updated_at = nowISO();
+      saveDB(db);
+    }
+  });
+
+  route("/settings", () => {
+    if(!requireAuth()) return;
+    const uid_ = myId();
+    const p = ensureProfile(uid_);
+    const sports = getSports(uid_);
+    const sub = getSubscription(uid_);
+    const premium = hasPremium(uid_);
+
+    $("#app").innerHTML = `
+      <div class="grid cols2">
+        <section class="card">
+          <div class="hd">
+            <h2 class="title">Profil</h2>
+            <div class="row">
+              ${premium ? `<span class="badge ok">Premium</span>` : `<span class="badge">Gratuit</span>`}
+              <button class="btn small" id="adminBtn">Mode Admin</button>
+              <button class="btn small danger" id="logout">Déconnexion</button>
+            </div>
+          </div>
+          <div class="bd">
+            <div class="item">
+              <div class="avatar">${esc(p.avatar_initial || "?")}</div>
+              <div class="spacer">
+                <h4>${esc(p.display_name || "Sans nom")}</h4>
+                <p>${esc(p.city || "Zone inconnue")} • ${esc(sports.map(s=> (s.sport==="TENNIS"?"T":"P")+s.level).join(" • ") || "Aucun sport")}</p>
+                <div class="meta">
+                  <a class="btn small" href="#/onboarding">Modifier profil & sports</a>
+                  <a class="btn small primary" href="#/premium">Gérer Premium</a>
+                </div>
+              </div>
+            </div>
+
+            <div class="hr"></div>
+
+            <h3 class="title" style="font-size:16px;margin:0 0 10px">Blocages</h3>
+            <div class="list">
+              ${renderBlocks()}
+            </div>
+
+            <div class="hr"></div>
+            <h3 class="title" style="font-size:16px;margin:0 0 10px">Données (démo)</h3>
+            <div class="row">
+              <button class="btn" id="export">Exporter JSON</button>
+              <button class="btn danger" id="reset">Réinitialiser toute l’app</button>
+            </div>
+            <div class="hint">Exporter sert à copier-coller ton “état” (utile en prototype).</div>
+          </div>
+        </section>
+
+        <aside class="card">
+          <div class="hd"><h3 class="title">Mon statut</h3></div>
+          <div class="bd">
+            <div class="notice">
+              <strong>Plan :</strong> ${esc(sub?.plan || "NONE")}<br/>
+              <strong>Statut :</strong> ${esc(sub?.status || "inactive")}<br/>
+              <strong>Fin :</strong> ${sub?.current_period_end ? fmtDateTime(sub.current_period_end) : "—"}<br/>
+              <strong>Renouvellement :</strong> ${sub?.cancel_at_period_end ? "désactivé" : "actif"}
+            </div>
+            <div class="hr"></div>
+            <div class="notice">
+              <strong>Monétisation (V1)</strong><br/>
+              Frais à la confirmation : <b>${centsToEUR(db.settings.reservation_fee_cents)}</b><br/>
+              Premium : <b>0 € de frais</b>
+            </div>
+          </div>
+        </aside>
+      </div>
+    `;
+
+    $("#logout").addEventListener("click", logout);
+
+    $("#adminBtn").addEventListener("click", () => {
+      const pwd = prompt("Mot de passe Admin (démo) :");
+      if(pwd === "tenrally"){
+        session.is_admin = true;
+        saveSession(session);
+        toast("Mode Admin activé.");
+        location.hash = "#/admin";
+      } else {
+        toast("Mot de passe incorrect.");
+      }
+    });
+
+    $("#export").addEventListener("click", () => {
+      const blob = JSON.stringify(db, null, 2);
+      copyToClipboard(blob);
+      toast("Données copiées.", "Collées dans ton presse-papiers (JSON).");
+    });
+
+    $("#reset").addEventListener("click", () => {
+      if(!confirm("Réinitialiser toute l’app ? (efface tout le localStorage Tenrally)")) return;
+      localStorage.removeItem(STORE_KEY);
+      localStorage.removeItem(SESSION_KEY);
+      location.reload();
+    });
+
+    function renderBlocks(){
+      const blocks = db.blocks.filter(b => b.blocker_id===uid_);
+      if(!blocks.length) return `<div class="notice">Aucun blocage.</div>`;
+      return blocks.map(b => {
+        const pr = getProfile(b.blocked_id);
+        return `
+          <div class="item">
+            <div class="avatar">${esc(pr?.avatar_initial || "?")}</div>
+            <div class="spacer">
+              <h4>${esc(pr?.display_name || "Utilisateur")}</h4>
+              <p>Bloqué le ${fmtDateTime(b.at)}</p>
+              <div class="meta">
+                <button class="btn small" data-unblock="${b.id}">Débloquer</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    $("#app").addEventListener("click", (e) => {
+      const t = e.target;
+      if(t && t.matches("[data-unblock]")){
+        const id = t.getAttribute("data-unblock");
+        db.blocks = db.blocks.filter(b => b.id !== id);
+        saveDB(db);
+        toast("Débloqué.");
+        render();
+      }
+    });
+  });
+
+  route("/admin", () => {
+    if(!requireAuth()) return;
+    if(!session.is_admin){ location.hash="#/settings"; return; }
+
+    $("#app").innerHTML = `
+      <div class="card">
+        <div class="hd">
+          <h2 class="title">Admin</h2>
+          <div class="row">
+            <a class="btn small" href="#/discover">Retour app</a>
+            <button class="btn small danger" id="exitAdmin">Quitter Admin</button>
+          </div>
+        </div>
+        <div class="bd">
+          <div class="row">
+            <button class="btn" data-tab="dashboard">Dashboard</button>
+            <button class="btn" data-tab="monetization">Monétisation</button>
+            <button class="btn" data-tab="users">Utilisateurs</button>
+            <button class="btn" data-tab="reports">Signalements</button>
+            <button class="btn" data-tab="content">Contenu</button>
+          </div>
+          <div class="hr"></div>
+          <div id="adminBody"></div>
+        </div>
+      </div>
+    `;
+
+    $("#exitAdmin").addEventListener("click", () => {
+      session.is_admin = false;
+      saveSession(session);
+      toast("Mode Admin désactivé.");
+      location.hash = "#/settings";
+    });
+
+    const body = $("#adminBody");
+
+    const renderTab = (tab) => {
+      if(tab==="dashboard") body.innerHTML = adminDashboard();
+      if(tab==="monetization") body.innerHTML = adminMonetization();
+      if(tab==="users") body.innerHTML = adminUsers();
+      if(tab==="reports") body.innerHTML = adminReports();
+      if(tab==="content") body.innerHTML = adminContent();
+    };
+
+    renderTab("dashboard");
+
+    $("#app").addEventListener("click", (e) => {
+      const t = e.target;
+      if(t && t.matches("[data-tab]")){
+        renderTab(t.getAttribute("data-tab"));
+      }
+      if(t && t.matches("[data-ban]")){
+        const userId = t.getAttribute("data-ban");
+        const reason = prompt("Raison du ban (démo) :") || "Violation des règles";
+        db.bans.push({ user_id:userId, reason, at: nowISO() });
+        saveDB(db);
+        toast("Utilisateur banni.");
+        renderTab("users");
+      }
+      if(t && t.matches("[data-unban]")){
+        const userId = t.getAttribute("data-unban");
+        db.bans = db.bans.filter(b => b.user_id !== userId);
+        saveDB(db);
+        toast("Utilisateur débanni.");
+        renderTab("users");
+      }
+      if(t && t.matches("[data-close-report]")){
+        const rid = t.getAttribute("data-close-report");
+        const r = db.reports.find(x=> x.id===rid);
+        if(r){ r.status="CLOSED"; saveDB(db); toast("Signalement clôturé."); renderTab("reports"); }
+      }
+    });
+
+    // monetization save
+    $("#app").addEventListener("click", (e) => {
+      const t = e.target;
+      if(t && t.id==="saveMonetization"){
+        const fee = clampInt($("#feeC").value, 0, 9999);
+        const pm = clampInt($("#pmC").value, 0, 999999);
+        const pa = clampInt($("#paC").value, 0, 999999);
+        const enabled = $("#promoEn").value === "1";
+        const hours = clampInt($("#cancelH").value, 0, 240);
+
+        db.settings.reservation_fee_cents = fee;
+        db.settings.premium_monthly_cents = pm;
+        db.settings.premium_annual_cents = pa;
+        db.settings.promo_annual_enabled = enabled;
+        db.settings.cancellation_policy_hours = hours;
+        saveDB(db);
+        toast("Monétisation enregistrée.");
+        renderTab("monetization");
+        renderTop();
+      }
+      if(t && t.id==="saveContent"){
+        const terms = ($("#terms").value||"").trim();
+        db.settings.terms = terms;
+        // faq
+        const q1 = ($("#faq_q1").value||"").trim(); const a1 = ($("#faq_a1").value||"").trim();
+        const q2 = ($("#faq_q2").value||"").trim(); const a2 = ($("#faq_a2").value||"").trim();
+        const q3 = ($("#faq_q3").value||"").trim(); const a3 = ($("#faq_a3").value||"").trim();
+        db.settings.faq = [{q:q1,a:a1},{q:q2,a:a2},{q:q3,a:a3}].filter(x=>x.q && x.a);
+        saveDB(db);
+        toast("Contenu enregistré.");
+        renderTab("content");
+      }
+    });
+
+    function adminDashboard(){
+      const users = db.users.length;
+      const matches = db.matches.length;
+      const open = db.matches.filter(m=>m.status==="OPEN").length;
+      const confirmed = db.matches.filter(m=>m.status==="CONFIRMED").length;
+      const reports = db.reports.filter(r=>r.status==="OPEN").length;
+      const premium = db.subscriptions.filter(s=>s.status==="active").length;
+      return `
+        <div class="grid cols2">
+          <div class="card" style="box-shadow:none">
+            <div class="hd"><h3 class="title" style="font-size:16px">KPIs</h3></div>
+            <div class="bd">
+              <div class="list">
+                ${k("Utilisateurs", users)}
+                ${k("Matchs", matches)}
+                ${k("Matchs OPEN", open)}
+                ${k("Matchs CONFIRMED", confirmed)}
+                ${k("Premium actifs", premium)}
+                ${k("Signalements OPEN", reports)}
+              </div>
+            </div>
+          </div>
+          <div class="card" style="box-shadow:none">
+            <div class="hd"><h3 class="title" style="font-size:16px">Monétisation</h3></div>
+            <div class="bd">
+              <div class="notice">
+                Frais : <b>${centsToEUR(db.settings.reservation_fee_cents)}</b><br/>
+                Premium mensuel : <b>${centsToEUR(db.settings.premium_monthly_cents)}</b><br/>
+                Annuel : <b>${centsToEUR(db.settings.premium_annual_cents)}/an</b><br/>
+                Promo annuel : <b>${db.settings.promo_annual_enabled ? "ON":"OFF"}</b>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      function k(name, value){
+        return `
+          <div class="item">
+            <div class="avatar">#</div>
+            <div>
+              <h4>${esc(name)}</h4>
+              <p class="mono">${esc(value)}</p>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    function adminMonetization(){
+      const s = db.settings;
+      return `
+        <div class="card" style="box-shadow:none">
+          <div class="hd"><h3 class="title" style="font-size:16px">Monétisation (modifiable sans coder)</h3></div>
+          <div class="bd">
+            <div class="notice">
+              Ici tu changes les prix/frais et la règle d’annulation. L’app lit ces paramètres immédiatement.
+            </div>
+            <div class="hr"></div>
+            <div class="split">
+              <div class="field">
+                <label>Frais réservation (centimes)</label>
+                <input id="feeC" type="number" min="0" value="${s.reservation_fee_cents}" />
+                <div class="hint">Ex : 199 = 1,99 €</div>
+              </div>
+              <div class="field">
+                <label>Premium mensuel (centimes)</label>
+                <input id="pmC" type="number" min="0" value="${s.premium_monthly_cents}" />
+                <div class="hint">Ex : 999 = 9,99 €</div>
+              </div>
+            </div>
+            <div class="split">
+              <div class="field">
+                <label>Premium annuel (centimes)</label>
+                <input id="paC" type="number" min="0" value="${s.premium_annual_cents}" />
+                <div class="hint">Ex : 9588 = 95,88 €</div>
+              </div>
+              <div class="field">
+                <label>Promo annuel activée</label>
+                <select id="promoEn">
+                  <option value="1" ${s.promo_annual_enabled?"selected":""}>Oui</option>
+                  <option value="0" ${!s.promo_annual_enabled?"selected":""}>Non</option>
+                </select>
+              </div>
+            </div>
+            <div class="field">
+              <label>Politique d’annulation (heures)</label>
+              <input id="cancelH" type="number" min="0" max="240" value="${s.cancellation_policy_hours}" />
+            </div>
+            <div class="row right">
+              <button class="btn good" id="saveMonetization">Enregistrer</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function adminUsers(){
+      const rows = db.users.map(u => {
+        const p = getProfile(u.id);
+        const banned = isBanned(u.id);
+        const sports = getSports(u.id).map(s=> (s.sport==="TENNIS"?"T":"P")+s.level).join(" • ");
+        return `
+          <div class="item">
+            <div class="avatar">${esc(p?.avatar_initial || (p?.display_name||"?")[0] || "?")}</div>
+            <div class="spacer">
+              <h4>${esc(p?.display_name || "Sans nom")} ${banned ? `<span class="badge danger">BANNED</span>` : ``}</h4>
+              <p>${esc(u.email || u.phone || "—")} • ${esc(p?.city || "—")} • ${esc(sports || "—")}</p>
+              <div class="meta">
+                <a class="btn small" href="#/players/${u.id}">Ouvrir profil</a>
+                ${banned ? `<button class="btn small" data-unban="${u.id}">Débannir</button>` : `<button class="btn small danger" data-ban="${u.id}">Bannir</button>`}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join("");
+      return rows || `<div class="notice">Aucun utilisateur.</div>`;
+    }
+
+    function adminReports(){
+      const open = db.reports.filter(r=> r.status==="OPEN").sort((a,b)=> new Date(b.at)-new Date(a.at));
+      if(!open.length) return `<div class="notice">Aucun signalement ouvert.</div>`;
+      return `
+        <div class="list">
+          ${open.map(r => {
+            const reporter = getProfile(r.reporter_id);
+            const target = getProfile(r.target_user_id);
+            return `
+              <div class="item">
+                <div class="avatar">!</div>
+                <div class="spacer">
+                  <h4>Signalement</h4>
+                  <p>
+                    Par <b>${esc(reporter?.display_name || "—")}</b> → <b>${esc(target?.display_name || "—")}</b><br/>
+                    Raison : ${esc(r.reason)}<br/>
+                    Date : ${fmtDateTime(r.at)}
+                  </p>
+                  <div class="meta">
+                    <button class="btn small" data-close-report="${r.id}">Clôturer</button>
+                    ${target ? `<a class="btn small" href="#/players/${r.target_user_id}">Voir cible</a>` : ``}
+                  </div>
+                </div>
+              </div>
+            `;
+          }).join("")}
+        </div>
+      `;
+    }
+
+    function adminContent(){
+      const s = db.settings;
+      const faq = s.faq || [];
+      const q1 = faq[0]?.q || "Tenrally, c’est quoi ?";
+      const a1 = faq[0]?.a || "";
+      const q2 = faq[1]?.q || "Comment fonctionnent les frais ?";
+      const a2 = faq[1]?.a || "";
+      const q3 = faq[2]?.q || "Premium annuel promo ?";
+      const a3 = faq[2]?.a || "";
+      return `
+        <div class="card" style="box-shadow:none">
+          <div class="hd"><h3 class="title" style="font-size:16px">Contenu (FAQ / CGU)</h3></div>
+          <div class="bd">
+            <div class="field">
+              <label>CGU / Texte légal (démo)</label>
+              <textarea id="terms">${esc(s.terms || "")}</textarea>
+            </div>
+            <div class="hr"></div>
+            <div class="notice"><strong>FAQ</strong> (3 entrées — modifiable)</div>
+            <div class="field"><label>Q1</label><input id="faq_q1" value="${esc(q1)}"/></div>
+            <div class="field"><label>R1</label><textarea id="faq_a1">${esc(a1)}</textarea></div>
+            <div class="field"><label>Q2</label><input id="faq_q2" value="${esc(q2)}"/></div>
+            <div class="field"><label>R2</label><textarea id="faq_a2">${esc(a2)}</textarea></div>
+            <div class="field"><label>Q3</label><input id="faq_q3" value="${esc(q3)}"/></div>
+            <div class="field"><label>R3</label><textarea id="faq_a3">${esc(a3)}</textarea></div>
+            <div class="row right">
+              <button class="btn good" id="saveContent">Enregistrer</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function clampInt(v,min,max){
+      const n = parseInt(v||"",10);
+      if(isNaN(n)) return min;
+      return Math.max(min, Math.min(max, n));
+    }
+  });
+
+  /* ---------------------------
+     Common
+  --------------------------- */
+  function logout(){
+    session = { user_id:null, is_admin:false };
+    saveSession(session);
+    toast("Déconnecté.");
+    location.hash = "#/";
+  }
+
+  function pageNotFound(msg="Page introuvable."){
+    return `
+      <div class="card">
+        <div class="hd"><h2 class="title">Erreur</h2></div>
+        <div class="bd">
+          <div class="notice">${esc(msg)}</div>
+          <div class="hr"></div>
+          <a class="btn primary" href="#/">Retour</a>
+        </div>
+      </div>
+    `;
+  }
+
+  function copyToClipboard(text){
+    if(navigator.clipboard?.writeText) return navigator.clipboard.writeText(text);
+    const ta = document.createElement("textarea");
+    ta.value = text; document.body.appendChild(ta);
+    ta.select(); document.execCommand("copy");
+    document.body.removeChild(ta);
+  }
+
+  /* ---------------------------
+     Boot
+  --------------------------- */
+  // Guard: if session user got deleted
+  if(session.user_id && !getUser(session.user_id)){
+    session = { user_id:null, is_admin:false };
+    saveSession(session);
+  }
+  render();
+})();
+</script>
+</body>
+</html>
