@@ -6,26 +6,33 @@
   <title>Tenrally — Partenaires Tennis & Padel</title>
   <meta name="description" content="Tenrally — Trouve des partenaires de tennis et padel, crée des matchs, discute, confirme, et joue plus souvent." />
   <style>
-    :root{
-      --bg:#0b1020;
-      --panel:#0f1730;
-      --panel2:#121f3d;
-      --text:#eaf0ff;
-      --muted:#aab6df;
-      --border:rgba(255,255,255,.10);
-      --accent:#7aa2ff;
-      --accent2:#9cffd0;
-      --danger:#ff6b7a;
-      --ok:#4de3a2;
-      --warn:#ffd66b;
-      --shadow: 0 10px 30px rgba(0,0,0,.35);
-      --r:14px;
-      --r2:12px;
-      --max:1100px;
-      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-    }
-    *{box-sizing:border-box}
+:root{
+  --bg:#f4f7fb;
+  --panel:#ffffff;
+  --panel2:#f0f5ff;
+
+  --text:#0f172a;
+  --muted:#475569;
+
+  --border:rgba(15,23,42,.12);
+
+  /* Vert tennis */
+  --accent:#16a34a;
+  --accent2:#22c55e;
+
+  --danger:#ef4444;
+  --ok:#16a34a;
+  --warn:#f59e0b;
+
+  --shadow:0 10px 30px rgba(15,23,42,.12);
+
+  --r:14px;
+  --r2:12px;
+  --max:1100px;
+
+  --sans:ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+  --mono:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}    *{box-sizing:border-box}
     html,body{height:100%}
     body{
       margin:0;
@@ -34,16 +41,14 @@
       background:
         radial-gradient(900px 600px at 15% 0%, rgba(122,162,255,.22), transparent 55%),
         radial-gradient(900px 600px at 90% 10%, rgba(156,255,208,.14), transparent 55%),
-        linear-gradient(180deg, #070a13, var(--bg));
-    }
+        linear-gradient(180deg, #070a13, var(--bg));    }
     a{color:inherit}
     .wrap{max-width:var(--max); margin:0 auto; padding:18px}
     .topbar{
       position:sticky; top:0; z-index:30;
       background: rgba(11,16,32,.75);
       backdrop-filter: blur(14px);
-      border-bottom:1px solid var(--border);
-    }
+      border-bottom:1px solid var(--border);    }
     .toprow{max-width:var(--max); margin:0 auto; padding:14px 18px; display:flex; align-items:center; justify-content:space-between; gap:12px}
     .brand{display:flex; align-items:center; gap:10px; text-decoration:none}
     .logo{
